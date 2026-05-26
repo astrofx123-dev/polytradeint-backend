@@ -43,6 +43,9 @@ const corsOptions = {
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
+// Trust Render's proxy so express-rate-limit works correctly
+app.set('trust proxy', 1);
+
 app.use(cors(corsOptions));
 app.use(helmet());
 app.use(express.json({ limit: '10kb' }));
