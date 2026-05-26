@@ -19,10 +19,10 @@ const userSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-userSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
+// ── Fix: don't use next() with async pre-save in Mongoose 7+ ──
+userSchema.pre('save', async function() {
+  if (!this.isModified('password')) return;
   this.password = await bcrypt.hash(this.password, 12);
-  next();
 });
 
 userSchema.methods.correctPassword = async function(candidate, hashed) {
