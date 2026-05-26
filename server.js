@@ -15,7 +15,8 @@ const app = express();
 
 // ── CORS ─────────────────────────────────────────────────────────
 const ALLOWED_ORIGINS = [
-  process.env.CLIENT_URL,
+  'https://polytradeint.netlify.app',  // production
+  process.env.CLIENT_URL,              // from Render env vars
   'http://localhost:3000',
   'http://localhost:5500',
   'http://localhost:5501',
@@ -27,10 +28,14 @@ const ALLOWED_ORIGINS = [
   'http://127.0.0.1:5503',
 ].filter(Boolean);
 
+console.log('✅ Allowed CORS origins:', ALLOWED_ORIGINS);
+
 const corsOptions = {
   origin: function (origin, callback) {
+    console.log('🌐 Incoming origin:', origin);
     if (!origin) return callback(null, true);
     if (ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
+    console.log('❌ Blocked origin:', origin);
     callback(new Error('CORS: origin not allowed — ' + origin));
   },
   credentials: true,
