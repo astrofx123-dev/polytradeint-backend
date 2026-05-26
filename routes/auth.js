@@ -10,7 +10,6 @@ const { authLimiter } = require('../middleware/rateLimiter');
 const signToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
 
-// helper: build the user object sent to the frontend
 function publicUser(user) {
   const nameParts = (user.fullName || '').trim().split(' ');
   const firstName = user.firstName || nameParts[0] || '';
@@ -114,6 +113,7 @@ router.post('/register', authLimiter, async (req, res) => {
     const token = signToken(user._id);
     res.status(201).json({ token, user: publicUser(user) });
   } catch (err) {
+    console.error('REGISTER ERROR:', err.message, err.stack);
     res.status(500).json({ message: err.message });
   }
 });
@@ -129,6 +129,7 @@ router.post('/login', authLimiter, async (req, res) => {
     const token = signToken(user._id);
     res.json({ token, user: publicUser(user) });
   } catch (err) {
+    console.error('LOGIN ERROR:', err.message, err.stack);
     res.status(500).json({ message: err.message });
   }
 });
@@ -161,7 +162,7 @@ router.post('/forgot-password', authLimiter, async (req, res) => {
 
     res.json({ message: 'If that email is registered, a reset code has been sent.' });
   } catch (err) {
-    console.error('forgot-password error:', err);
+    console.error('FORGOT PASSWORD ERROR:', err.message, err.stack);
     res.status(500).json({ message: 'Failed to send reset code. Please try again.' });
   }
 });
@@ -187,6 +188,7 @@ router.post('/verify-otp', async (req, res) => {
     otpStore.set(email.toLowerCase(), record);
     res.json({ message: 'Code verified successfully.' });
   } catch (err) {
+    console.error('VERIFY OTP ERROR:', err.message, err.stack);
     res.status(500).json({ message: 'Verification failed. Please try again.' });
   }
 });
@@ -219,6 +221,7 @@ router.post('/reset-password', async (req, res) => {
 
     res.json({ message: 'Password reset successfully. You can now sign in.' });
   } catch (err) {
+    console.error('RESET PASSWORD ERROR:', err.message, err.stack);
     res.status(500).json({ message: 'Password reset failed. Please try again.' });
   }
 });
