@@ -1,4 +1,5 @@
 'use strict';
+
 const express     = require('express');
 const router      = express.Router();
 const Transaction = require('../model/Transaction');
@@ -12,6 +13,7 @@ router.post('/', auth, async (req, res) => {
     const allowed = ['deposit', 'withdrawal', 'trade', 'transfer'];
     if (!allowed.includes(type))
       return res.status(400).json({ message: 'Invalid transaction type.' });
+
     if (!amount || isNaN(amount) || +amount <= 0)
       return res.status(400).json({ message: 'Invalid amount.' });
 
