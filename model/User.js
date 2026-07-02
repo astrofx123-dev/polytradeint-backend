@@ -16,6 +16,7 @@ const userSchema = new mongoose.Schema({
   roi:       { type: Number, default: 0 },
   isVerified:{ type: Boolean, default: false },
   role:      { type: String, enum: ['user','admin'], default: 'user' },
+  status:    { type: String, enum: ['active','suspended'], default: 'active' },
   createdAt: { type: Date, default: Date.now },
 });
 
